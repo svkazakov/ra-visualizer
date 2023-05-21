@@ -6,12 +6,12 @@ Genome read alignments visualizer
 It can generate the following pictures (in .svg format), with arbitrary zoom and offset, relative to the start 
 of the reference:<br/>
 Image with reads coloring:<br/>
-<img src="pics/pic-useful-reads.jpg" alt="Image with useful reads coloring" width="450"> <br/>
-<img src="pics/pic1.png" alt="Image 1" width="450"><br/>
-<img src="pics/pic2.jpg" alt="Image 2" width="450"><br/>
-<img src="pics/pic4.jpg" alt="Image 4" width="450"><br/>
+<img src="pics/pic-useful-reads.jpg" alt="Image with useful reads coloring" width="650"> <br/>
+<img src="pics/pic1.png" alt="Image 1" width="650"><br/>
+<img src="pics/pic2.jpg" alt="Image 2" width="650"><br/>
+<img src="pics/pic4.jpg" alt="Image 4" width="650"><br/>
 Only contig mapping output:<br/>
-<img src="pics/pic-contigs-mapping.jpg" alt="Image with contigs mapping" width="450"><br/>
+<img src="pics/pic-contigs-mapping.jpg" alt="Image with contigs mapping" width="650"><br/>
 
 
 Now the project is still a bit raw, but within a few months I will try to improve it.
