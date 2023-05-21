@@ -22,6 +22,12 @@ Now the project is still a bit raw, but within a few months I will try to improv
 * Tidy up the code, add examples of its work.
 * Add support for working directly with .sam files.
 
+## Dependencies
+* TeX Live
+
+Python packages:
+* pyx
+
 ## Questions, feedback
 You can make issues on the Project page on GitHub or write me directly to svkazakov.me at gmail.com.
 
