@@ -27,6 +27,11 @@ Now the project is still a bit raw, but within a few months I will try to improv
 
 Python packages:
 * pyx
+* pysam
+
+## For Windows
+Install Linux (for example, Ubuntu 22.04.2 LTS) with WSL for Windows (you can use any instruction on Web 
+how to do this, for example, see first steps in [this article](https://ruslanmv.com/blog/Python3-in-Windows-with-Ubuntu)).
 
 ## Questions, feedback
 You can make issues on the Project page on GitHub or write me directly to svkazakov.me at gmail.com.
