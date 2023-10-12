@@ -9,7 +9,7 @@ from utils import *
 # ----------------------------  Global parameters  ----------------------------
 
 
-view_POS_FROM      = 128000000
+view_POS_FROM      =         0
 view_SIZE          =   6000000
 # ref_SIZE           = 4641652
 # ref_SIZE           = 133797422
@@ -48,6 +48,7 @@ point2x_COEF = 20           #  20 points in 1 cm coordinates    (real 35 in 1 cm
 
 
 
+c = None        # Canvas
 
 # ---------------------------  Low-level functions  -----------------------------
 
@@ -360,9 +361,10 @@ class Read():
 
 
 def run(args):
-
     print("Starting...")
+    print("args = " + str(args))
 
+    global ref_SIZE, contigs_FN, reads_FN
     ref_SIZE = args.ref_size
     contigs_FN = args.contigs
     reads_FN = args.reads
@@ -371,6 +373,7 @@ def run(args):
     text.set(text.LatexRunner)
     text.preamble(r"\usepackage{times}")
 
+    global c
     c = canvas.canvas()
     c.stroke(path.rect(0, 0, coord2x(view_POS_TO) + 1.0, 15), [color.rgb.white])
 
