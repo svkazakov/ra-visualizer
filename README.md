@@ -39,6 +39,30 @@ how to do this, for example, see first steps in [this article](https://ruslanmv.
 After that you can install `python3` and all dependencies for it (don't forget to install texlive).<br>
 After all, you can run `python3 src/visualize.py` in folder `/mnt/<PATH_TO_PROJECT_DIR>`.
 
+## Run steps
+Suppose you have:
+1. Reference in `.fasta` format
+2. Some assembly (contigs) in `.fasta` format
+3. And long reads in `.fastq` format...  
+
+What you should do to visualize it all together? ☺
+
+Run these steps:
+1. `bwa index reference.fasta`
+2. `bwa mem reference.fasta contigs.fasta > contigs.sam`
+3. `bwa mem -x ont2d -A1 -B2 -O2 -E1 -t <number_of_CPUs_to_use> reference.fasta reads.fastq > reads.sam` <br>
+  **NB.** This command is used for Oxford Nanopore long reads.  For other sequencing technologies you should use
+    different command to align reads to reference.
+4. (temporary) Generate `.stats` file from `contigs.sam` file
+5. (temporary) Generate `.stats` file from `reads.sam`
+6. Run Visualizer: <br>
+  `python3 src/visualize.py --ref-size <reference_size> -c contigs.stats -r reads.stats`
+7. See the resulting `output.svg` image and/or change the output options in the previous step
+
+
+## Example 1
+ToDo
+
 ## Questions, feedback
 You can make issues on the Project page on GitHub or write me directly to svkazakov.me at gmail.com.
 

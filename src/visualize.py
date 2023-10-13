@@ -337,6 +337,7 @@ class Visualizer(object):
         self.c.writeSVGfile(self.output_FN)
     
         print("Done!")
+        print("Resulting picture is saved to " + self.output_FN)
 
 
 class Read():
