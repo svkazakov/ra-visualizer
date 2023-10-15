@@ -24,14 +24,15 @@ Now the project is still a bit raw, but within a few months I will try to improv
 
 ## Dependencies
 * TeX Live <br>
-(`sudo apt install texlive`)
+  (`sudo apt install texlive`)
+* bwa
 
 Python packages:
 * pyx
 * pysam
 
 <b>NB.</b> Python package `pysam` is working only for Linux OS, but for Windows users there are several ways
-to make everything work.  One of them is described in the next section.
+how to make everything work.  One of them is described in the next section.
 
 ## For Windows
 Install Linux (for example, Ubuntu 22.04.2 LTS) with WSL for Windows (you can use any instruction on Web 
@@ -53,8 +54,10 @@ Run these steps:
 3. `bwa mem -x ont2d -A1 -B2 -O2 -E1 -t <number_of_CPUs_to_use> reference.fasta reads.fastq > reads.sam` <br>
   **NB.** This command is used for Oxford Nanopore long reads.  For other sequencing technologies you should use
     different command to align reads to reference.
-4. (temporary) Generate `.stats` file from `contigs.sam` file
-5. (temporary) Generate `.stats` file from `reads.sam`
+4. (temporary) Generate `.stats` file from `contigs.sam` file via command: <br>
+  `python3 src/gen_stats_table.py -i contigs.sam -o contigs.stats`
+5. (temporary) Generate `.stats` file from `reads.sam` file via command: <br>
+  `python3 src/gen_stats_table.py -i reads.sam -o reads.stats`
 6. Run Visualizer: <br>
   `python3 src/visualize.py --ref-size <reference_size> -c contigs.stats -r reads.stats`
 7. See the resulting `output.svg` image and/or change the output options in the previous step

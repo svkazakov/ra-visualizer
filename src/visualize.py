@@ -142,42 +142,42 @@ class Visualizer(object):
             for line in f:
                 record = line.split("\t")
                 found += 1
-    
-                ref_start = int(record[4])
-                ref_end   = int(record[5])
-                assert 0 <= ref_start <= ref_end < self.ref_SIZE
-    
-                good = True
-                if (ref_end < self.view_POS_FROM) or (ref_start > self.view_POS_TO):
-                    good = False
-                else:
-                    inside += 1
-                    self._draw_ref(ref_start, ref_end, contigs_Y)
-                    xStyle = [style.linewidth.Thin, color.cmyk.Gray, style.linestyle.dashed]
-                    if self.view_POS_FROM <= ref_start <= self.view_POS_TO:
-                        self.c.stroke(path.line(self.coord2x(ref_start), contigs_Y,
-                                                self.coord2x(ref_start), 14), xStyle)
-                    if self.view_POS_FROM <= ref_end <= self.view_POS_TO:
-                        self.c.stroke(path.line(self.coord2x(ref_end), contigs_Y,
-                                                self.coord2x(ref_end), 14), xStyle)
-    
-                    if last_end is not None:
-                        gap_middle = (last_end + ref_start) // 2
-                        gap_size = ref_start - last_end - 1
-                        gap_middle_x = self.coord2x(gap_middle)
-                        text_y = coords_bar_Y-1
-                        path_y = text_y+0.3
-                        if gap_size in [6715, 10029, 16, 12, -55, 1122]:        # move to lower position
-                            text_y -= 0.3
-                            path_y = text_y+0.25
-                        if gap_size in [1145, 93, 5038]:
-                            path_y = text_y+0.25
-                        self.c.stroke(path.line(gap_middle_x, path_y, gap_middle_x, contigs_Y-0.18),
-                                        [style.linewidth.Thin, color.rgb.red, deco.earrow.small])
-                        self.c.text(gap_middle_x, text_y, r"\textbf{Gap= " + int2str(gap_size, delim=",") + "}",
-                                        [text.size.scriptsize, color.rgb.red, text.halign.boxcenter])
-                    last_end = ref_end
-    
+                
+                if record[2] != 'u':    # i.e. read is mapped
+                    ref_start = int(record[4])
+                    ref_end   = int(record[5])
+                    assert 0 <= ref_start <= ref_end < self.ref_SIZE
+        
+                    good = True
+                    if (ref_end < self.view_POS_FROM) or (ref_start > self.view_POS_TO):
+                        good = False
+                    else:
+                        inside += 1
+                        self._draw_ref(ref_start, ref_end, contigs_Y)
+                        xStyle = [style.linewidth.Thin, color.cmyk.Gray, style.linestyle.dashed]
+                        if self.view_POS_FROM <= ref_start <= self.view_POS_TO:
+                            self.c.stroke(path.line(self.coord2x(ref_start), contigs_Y,
+                                                    self.coord2x(ref_start), 14), xStyle)
+                        if self.view_POS_FROM <= ref_end <= self.view_POS_TO:
+                            self.c.stroke(path.line(self.coord2x(ref_end), contigs_Y,
+                                                    self.coord2x(ref_end), 14), xStyle)
+        
+                        if last_end is not None:
+                            gap_middle = (last_end + ref_start) // 2
+                            gap_size = ref_start - last_end - 1
+                            gap_middle_x = self.coord2x(gap_middle)
+                            text_y = coords_bar_Y-1
+                            path_y = text_y+0.3
+                            if gap_size in [6715, 10029, 16, 12, -55, 1122]:        # move to lower position
+                                text_y -= 0.3
+                                path_y = text_y+0.25
+                            if gap_size in [1145, 93, 5038]:
+                                path_y = text_y+0.25
+                            self.c.stroke(path.line(gap_middle_x, path_y, gap_middle_x, contigs_Y-0.18),
+                                            [style.linewidth.Thin, color.rgb.red, deco.earrow.small])
+                            self.c.text(gap_middle_x, text_y, r"\textbf{Gap= " + int2str(gap_size, delim=",") + "}",
+                                            [text.size.scriptsize, color.rgb.red, text.halign.boxcenter])
+                        last_end = ref_end
     
         print("Done")
         print("Total " + str(found) + " contigs found,  " + str(inside) + " are inside view window!")
@@ -216,27 +216,27 @@ class Visualizer(object):
                 record = line.strip().split('\t')
                 all_reads += 1
     
-                if (record[4] != "u") and (record[4] != "noInfo"):
-                    read = Read(record, line.strip())
+                if record[2] != 'u':    # i.e. read is mapped
+                    read = Read(record, line.strip(), self.ref_SIZE)
     
                     if (read.ref_end < self.view_POS_FROM) or (read.ref_start > self.view_POS_TO):
                         pass    # outside the view window
                     else:
                         # a good one
                         good_count += 1
-                        if read.ref_len >= 40000:
+                        if read.mapping_len >= 40000:
                             gr = 0
-                        elif read.ref_len >= 20000:
+                        elif read.mapping_len >= 20000:
                             gr = 1
                         else:
                             gr = 2
     
-                        gr = 0      # temporary!!
+                        # gr = 0      # temporary!!
                         all_records += 1
-                        if read.ref_len >= 200:
+                        if read.mapping_len >= 200:
                             using += 1
                             reads[gr].append(read)
-                            if read.ref_len < 1000:
+                            if read.mapping_len < 1000:
                                 too_small += 1
     
                         # if (gr != 2) and (41800000 <= read.ref_start < 41900000):
@@ -310,7 +310,7 @@ class Visualizer(object):
                     if gr == 2:
                         gr2_not_printed += 1
                     else:
-                        print("Warning!  Can't print " + read_NAMES[gr] + " read with length = " + int2str(read.ref_len))
+                        print("Warning!  Can't print " + read_NAMES[gr] + " read with length = " + int2str(read.mapping_len))
     
         print("Done!")
         print("not printed short reads = " + int2str(gr2_not_printed))
@@ -341,35 +341,37 @@ class Visualizer(object):
 
 
 class Read():
-    def __init__(self, r, line):
+    def __init__(self, r, line, ref_size):
         # r = line.split("\t")
         self.line = line
 
-        no          = int(r[0])
-        map_strain  = r[4]
+        read_name   = r[0]
+        read_len    = int(r[1])
+        map_strain  = r[2]
         assert map_strain in ["+", "-"]
-        ref_name    = r[5]
-        ref_start   = int(r[6])
-        ref_end     = int(r[7])
-        ref_len     = int(r[8])
-        interesting = (r[9]  == "YES")
-        useful      = (r[10] == "YES")
-        clipped_head= int(r[11])
-        clipped_tail= int(r[12])
+        ref_name    = r[3]
+        ref_start   = int(r[4])
+        ref_end     = int(r[5])
+        mapping_len = int(r[6])
+        interesting = (r[7]  == "YES")
+        useful      = (r[8] == "YES")
+        # clipped_head= int(r[11])      # ToDo:  add to generator
+        # clipped_tail= int(r[12])
 
-        # assert 0 <= ref_start <= ref_end < ref_SIZE
-        assert ref_len >= 0
+        assert 0 <= ref_start <= ref_end < ref_size
+        assert mapping_len >= 0
 
-        self.no = no
+        self.read_name = read_name
+        self.read_len = read_len
         self.map_strain = map_strain
         self.ref_name = ref_name
         self.ref_start= ref_start
         self.ref_end  = ref_end
-        self.ref_len  = ref_len
+        self.mapping_len  = mapping_len
         self.interesting = interesting
         self.useful = useful
-        self.clipped_head = clipped_head
-        self.clipped_tail = clipped_tail
+        self.clipped_head = 0
+        self.clipped_tail = 0
 
 
 
@@ -378,8 +380,8 @@ def main():
                                                  'contigs alignments to reference.')
 
     parser.add_argument("--ref-size", help="Reference size (default: 4'641'652 (E.coli))", type=int, default=4641652)
-    parser.add_argument("-c", "--contigs", help="Contigs .stats file (generated by sam_gen.py)")
-    parser.add_argument("-r", "--reads", help="Reads .stats file (generated by sam_gen.py)")
+    parser.add_argument("-c", "--contigs", help="Contigs .stats file (generated by gen_stats_table.py)")
+    parser.add_argument("-r", "--reads", help="Reads .stats file (generated by gen_stats_table.py)")
 
     parser.add_argument("-f", "--from-pos", help="View position: from coordinate (default: 0)", type=int, default=0)
     parser.add_argument("-s", "--view-size", help="View window size (default: 6'000'000)", type=int, default=6000000)
