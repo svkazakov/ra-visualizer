@@ -10,12 +10,12 @@ def print2(msg="", end='\n'):
     if end=='':
         sys.stderr.flush()
 
-def withP(cur, all, add = None, fl = 0, fm="%.1f"):
+def withP(cur, all, add = None, fl=0, fm="%.1f"):
     add = "" if (add is None) else (" " + add)
     return int2str(cur,fl=fl) + " (" + fm % (cur * 100.0 / all) + "%" + add + ")"
 
-
-
+def perc(cur, all, fl=0, fm="%.1f"):
+    return fl_func(fm % (cur * 100.0 / all), fl) + "%"
 
 
 
@@ -31,12 +31,11 @@ def int2str(v, fl = 0, delim="'"):
     if v < 0:
         ans = "-" + ans
     return fl_func(ans, fl)
-def fl(v, fl):
+def fl_func(v, fl):
     ans = str(v)
     while len(ans) < fl:
         ans = " " + ans
     return ans
-fl_func = fl
 
 
 

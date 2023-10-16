@@ -128,67 +128,76 @@ class Visualizer(object):
     
     
     def draw_contigs(self):
+        print("Processing contigs:")
         if not self.contigs_FN:
-            print("Contigs file not set!  Skipping drawing contigs...")
+            print("  Contigs file not set!  Skipping drawing contigs...")
             return
     
         self.c.text(legend_FROM, contigs_Y-0.12, r"\textbf{Contigs}", [text.size.large])
     
-        print("Loading contigs from " + self.contigs_FN + " and drawing them...")
-        found = 0; inside = 0
+        print("  Loading contigs from " + self.contigs_FN + "...")
+        contigs = []
+        found = 0
         with open(self.contigs_FN, "r") as f:
-            f.readline()    # header
-            last_end = None
+            f.readline()  # header
             for line in f:
                 record = line.split("\t")
                 found += 1
-                
-                if record[2] != 'u':    # i.e. read is mapped
-                    ref_start = int(record[4])
-                    ref_end   = int(record[5])
-                    assert 0 <= ref_start <= ref_end < self.ref_SIZE
+                if record[2] != 'u':  # i.e. if read is mapped
+                    contig = Read(record, line.strip(), self.ref_SIZE)
+                    contigs.append(contig)
         
-                    good = True
-                    if (ref_end < self.view_POS_FROM) or (ref_start > self.view_POS_TO):
-                        good = False
-                    else:
-                        inside += 1
-                        self._draw_ref(ref_start, ref_end, contigs_Y)
-                        xStyle = [style.linewidth.Thin, color.cmyk.Gray, style.linestyle.dashed]
-                        if self.view_POS_FROM <= ref_start <= self.view_POS_TO:
-                            self.c.stroke(path.line(self.coord2x(ref_start), contigs_Y,
-                                                    self.coord2x(ref_start), 14), xStyle)
-                        if self.view_POS_FROM <= ref_end <= self.view_POS_TO:
-                            self.c.stroke(path.line(self.coord2x(ref_end), contigs_Y,
-                                                    self.coord2x(ref_end), 14), xStyle)
+        print("  Processing...")
+        contigs.sort(key=operator.attrgetter('ref_start'))
         
-                        if last_end is not None:
-                            gap_middle = (last_end + ref_start) // 2
-                            gap_size = ref_start - last_end - 1
-                            gap_middle_x = self.coord2x(gap_middle)
-                            text_y = coords_bar_Y-1
-                            path_y = text_y+0.3
-                            if gap_size in [6715, 10029, 16, 12, -55, 1122]:        # move to lower position
-                                text_y -= 0.3
-                                path_y = text_y+0.25
-                            if gap_size in [1145, 93, 5038]:
-                                path_y = text_y+0.25
-                            self.c.stroke(path.line(gap_middle_x, path_y, gap_middle_x, contigs_Y-0.18),
-                                            [style.linewidth.Thin, color.rgb.red, deco.earrow.small])
-                            self.c.text(gap_middle_x, text_y, r"\textbf{Gap= " + int2str(gap_size, delim=",") + "}",
-                                            [text.size.scriptsize, color.rgb.red, text.halign.boxcenter])
-                        last_end = ref_end
+        print("  and drawing them...")
+        inside = 0
+        last_end = None
+        for contig in contigs:
+            ref_start = contig.ref_start
+            ref_end = contig.ref_end
+            if (ref_end < self.view_POS_FROM) or (ref_start > self.view_POS_TO):
+                # outside the view window
+                pass
+            else:
+                inside += 1
+                self._draw_ref(ref_start, ref_end, contigs_Y)
+                xStyle = [style.linewidth.Thin, color.cmyk.Gray, style.linestyle.dashed]
+                if self.view_POS_FROM <= ref_start <= self.view_POS_TO:
+                    self.c.stroke(path.line(self.coord2x(ref_start), contigs_Y,
+                                            self.coord2x(ref_start), 14), xStyle)
+                if self.view_POS_FROM <= ref_end <= self.view_POS_TO:
+                    self.c.stroke(path.line(self.coord2x(ref_end), contigs_Y,
+                                            self.coord2x(ref_end), 14), xStyle)
+
+                if last_end is not None:
+                    gap_middle = (last_end + ref_start) // 2
+                    gap_size = ref_start - last_end - 1
+                    gap_middle_x = self.coord2x(gap_middle)
+                    text_y = coords_bar_Y-1
+                    path_y = text_y+0.3
+                    if gap_size in [6715, 10029, 16, 12, -55, 1122]:        # move to lower position
+                        text_y -= 0.3
+                        path_y = text_y+0.25
+                    if gap_size in [1145, 93, 5038]:
+                        path_y = text_y+0.25
+                    self.c.stroke(path.line(gap_middle_x, path_y, gap_middle_x, contigs_Y-0.18),
+                                    [style.linewidth.Thin, color.rgb.red, deco.earrow.small])
+                    self.c.text(gap_middle_x, text_y, r"\textbf{Gap= " + int2str(gap_size, delim=",") + "}",
+                                    [text.size.scriptsize, color.rgb.red, text.halign.boxcenter])
+                last_end = ref_end
     
-        print("Done")
-        print("Total " + str(found) + " contigs found,  " + str(inside) + " are inside view window!")
+        print("  OK")
+        print("  Total " + str(found) + " contigs found, " + str(inside) + " are inside view window!")
         # draw_ref(     0,  20000, contigs_Y)
         # draw_ref( 25000, 100000, contigs_Y)
         # draw_ref(120000, 140000, contigs_Y)
     
 
     def draw_reads(self):
+        print("Processing reads:")
         if not self.reads_FN:
-            print("Reads file not set!  Skipping drawing reads...")
+            print("  Reads file not set!  Skipping drawing reads...")
             return
     
         self.c.text(legend_FROM, reads_Y_FROM + reads_ROWS_COUNT*reads_ROWS_DY/2 - 0.12, r"\textbf{Reads}", [text.size.large])
@@ -202,12 +211,12 @@ class Visualizer(object):
                                 self.coord2x(self.view_POS_TO), y), x_style)
     
     
-        print("Loading reads from " + self.reads_FN + "...")
+        print("  Loading reads from " + self.reads_FN + "...")
     
         all_reads = 0; good_count = 0; too_small = 0
         reads = [[], [], []]
     
-        all_records = 0; using = 0
+        using = 0
         cnt = 0
     
         with open(self.reads_FN, "r") as f:
@@ -216,7 +225,7 @@ class Visualizer(object):
                 record = line.strip().split('\t')
                 all_reads += 1
     
-                if record[2] != 'u':    # i.e. read is mapped
+                if record[2] != 'u':    # i.e. if read is mapped
                     read = Read(record, line.strip(), self.ref_SIZE)
     
                     if (read.ref_end < self.view_POS_FROM) or (read.ref_start > self.view_POS_TO):
@@ -232,7 +241,6 @@ class Visualizer(object):
                             gr = 2
     
                         # gr = 0      # temporary!!
-                        all_records += 1
                         if read.mapping_len >= 200:
                             using += 1
                             reads[gr].append(read)
@@ -243,25 +251,25 @@ class Visualizer(object):
                         #     print("read  #" + read.line)
                         #     cnt += 1
     
-        print("Done!")
-        print("Total reads found :     " + int2str(all_reads))
-        print()
+        print("  OK")
+        print("  Total reads found     :     " + int2str(all_reads))
         # print("cnt = " + str(cnt))
-        print("All records           :     " + int2str(all_records))
-        print("  with match >= 200   :     " + int2str(using))
+        print("    inside view window  :     " + int2str(good_count))
+        print("      with match >= 200 :     " + int2str(using))
+        print("      using reads       :     " + int2str(using))
         print()
     
     
-        print("Short reads            < 20 kb :     " + int2str(len(reads[2]),fl=5) + "     %.0f%%" % (len(reads[2])*100.0/good_count))
-        print("Middle-size reads     >= 20 kb :     " + int2str(len(reads[1]),fl=5) + "     %.0f%%" % (len(reads[1])*100.0/good_count))
-        print("Long reads            >= 40 kb :     " + int2str(len(reads[0]),fl=5) + "     %.0f%%" % (len(reads[0])*100.0/good_count))
-        print("too small  = " + str(too_small))
+        print("  Short reads            < 20 kb :    " + int2str(len(reads[2]),fl=7) + "    " + perc(len(reads[2]), using, 5))
+        print("  Middle-size reads     >= 20 kb :    " + int2str(len(reads[1]),fl=7) + "    " + perc(len(reads[1]), using, 5))
+        print("  Long reads            >= 40 kb :    " + int2str(len(reads[0]),fl=7) + "    " + perc(len(reads[0]), using, 5))
+        print("  too small  = " + str(too_small))
     
-        print("Processing...")
+        print("  Processing...")
         for gr in [0,1,2]:
             reads[gr].sort(key=operator.attrgetter('ref_start'))
     
-        print("and drawing them...")
+        print("  and drawing them...")
         random.seed(1234688)
         avail_from = [0] * reads_ROWS_COUNT
         gr2_not_printed = 0
@@ -310,10 +318,10 @@ class Visualizer(object):
                     if gr == 2:
                         gr2_not_printed += 1
                     else:
-                        print("Warning!  Can't print " + read_NAMES[gr] + " read with length = " + int2str(read.mapping_len))
+                        print("  Warning!  Can't print " + read_NAMES[gr] + " read with length = " + int2str(read.mapping_len))
     
-        print("Done!")
-        print("not printed short reads = " + int2str(gr2_not_printed))
+        print("  OK")
+        print("  not printed short reads = " + int2str(gr2_not_printed))
 
     
     def run(self):
