@@ -63,9 +63,9 @@ Let's assume you have:
 2. Some assembly (contigs) in file `contigs.fasta`
 3. A long nanopore reads in file `nanopore-reads.fastq`
 
-All files are placed in [example1 folder](/example1).
+All files are placed in [example1](/example1) folder.
 
-So, to view it all together, run steps from ['Run steps'](https://github.com/svkazakov/ra-visualizer#run-steps) section. Or you can use ready-made files
+So, to view it all together, run steps from '[Run steps](https://github.com/svkazakov/ra-visualizer#run-steps)' section. Or you can use ready-made files
 `contigs.stats` and `nanopore-reads.stats` in the example folder to view the resulting image. For that, run the command from the project folder: <br>
 `python3 src/visualize.py --ref-size 4641652 -c example1/contigs.stats -r example1/nanopore-reads.stats` <br>
 After that you can view the resulting image `output.svg` in the project folder. <br>
