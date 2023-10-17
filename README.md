@@ -14,14 +14,6 @@ Only contig mapping output:<br/>
 <img src="pics/pic-contigs-mapping.jpg" alt="Image with contigs mapping" width="650"><br/>
 
 
-Now the project is still a bit raw, but within a few months I will try to improve it.
-
-
-## Future improvements
-
-* Tidy up the code, add examples of its work.
-* Add support for working directly with .sam files.
-
 ## Dependencies
 * TeX Live <br>
   (`sudo apt install texlive`)
@@ -31,7 +23,7 @@ Python packages:
 * pyx
 * pysam
 
-<b>NB.</b> Python package `pysam` is working only for Linux OS, but for Windows users there are several ways
+**NB.** Python package `pysam` is working only for Linux OS, but for Windows users there are several ways
 how to make everything work.  One of them is described in the next section.
 
 ## For Windows
@@ -62,9 +54,38 @@ Run these steps:
   `python3 src/visualize.py --ref-size <reference_size> -c contigs.stats -r reads.stats`
 7. See the resulting `output.svg` image and/or change the output options in the previous step
 
+**NB.** If you don't have assembly or reads, you can run Visualizer without it. Just skip the commands 2,4 or 3,5
+(depending on what data is missing), and don't pass the corresponding parameter to Visualizer.
 
 ## Example 1
-ToDo
+Let's assume you have:
+1. Reference of E.coli bacterium in file `ecoli.fasta`
+2. Some assembly (contigs) in file `contigs.fasta`
+3. A long nanopore reads in file `nanopore-reads.fastq`
+All files are placed in example1 folder.
+
+So, to view it all together, run steps from 'Run steps' section, or you can use already made files
+`contigs.stats` and `nanopore-reads.stats` to view the resulting image. For that, run the command from the project folder: <br>
+`python3 src/visualize.py --ref-size 4641652 -c example1/contigs.stats -r example1/nanopore-reads.stats` <br>
+After that you can view the resulting image `output.svg` in the project folder. <br>
+You can also change the output options (you can see all available options by running `python3 src/visualize.py -h`).
+
+## Example 2
+Let's assume you:
+1. Don't have any references... 
+2. But you have assembly in file `contigs.fasta`
+3. And long reads in file `nanopore-reads.fastq`
+
+What you should do to visualize it?
+
+... TBA
+
+
+## Future improvements
+
+* Add support for working directly with .sam files.
+
+If you have any ideas how to improve this project, you can write me directly to svkazakov.me at gmail.com. 
 
 ## Questions, feedback
 You can make issues on the Project page on GitHub or write me directly to svkazakov.me at gmail.com.
