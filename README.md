@@ -89,7 +89,7 @@ What you should do to visualize it?
 If you have any ideas how to improve this project, you can write me directly to svkazakov.me at gmail.com. 
 
 ## Questions, feedback
-Please report any problems to the GitHub [issue tracker](https://github.com/svkazakov/ra-visualizer/issues). <br/>
+Please report any problem through the GitHub [issue tracker](https://github.com/svkazakov/ra-visualizer/issues). <br/>
 For other questions write me directly to svkazakov.me at gmail.com.
 
 ## License

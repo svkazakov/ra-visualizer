@@ -3,3 +3,6 @@ File example1-nanopore-reads.fastq.tar.gz, 141 Mb:
 * https://drive.google.com/file/d/1T1nabwYjmKv7JJZStTb-kJ-qEwvWnDlq/view?usp=sharing
 * Contains nanopore-reads.fastq, 275 Mb
 
+
+Source files were obtained from: https://github.com/fmalmeida/MpGAP/blob/623993a45522f2944c34edbaba10b428a1566c04/docs/quickstart.rst#L11
+
