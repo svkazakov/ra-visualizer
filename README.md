@@ -89,7 +89,8 @@ What you should do to visualize it?
 If you have any ideas how to improve this project, you can write me directly to svkazakov.me at gmail.com. 
 
 ## Questions, feedback
-You can make issues on the Project page on GitHub or write me directly to svkazakov.me at gmail.com.
+Please report any problems to the GitHub [issue tracker](https://github.com/svkazakov/ra-visualizer/issues). <br/>
+For other questions write me directly to svkazakov.me at gmail.com.
 
 ## License
 The MIT License (MIT)
