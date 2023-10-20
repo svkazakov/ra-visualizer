@@ -7,16 +7,19 @@ from utils import *
 def run(args):
     file = args.input_sam
 
-    print2("Reading alignments from " + file + "...")
+    print2("Reading alignments from " + file)
 
     samfile = pysam.AlignmentFile(file, 'r')
     out_f = open(args.output_file, 'w')
     
-    print("writting statistics to file " + args.output_file)
+    print("  and writing statistics to " + args.output_file + "...")
     # out_f.write("no.\tshortFN  \tsignal_len\talbacore_len\tmap_strain\tref_name\tref_start\tref_end\tref_len\t" +\
 	# 			"  Interesting\tUseful\n")
     out_f.write("read\tread_len\tmap_strain\tref_name\tref_start\tref_end\tmapping_len\t" +
-				"Interesting\tUseful\n")
+				"Interesting\tUseful\tclipped_head\tclipped_tail\n")
+
+    use_all_alignments = args.all
+    print("use_all_alignments = " + str(use_all_alignments))
 
     in_c = 0
     out_c = 0
@@ -33,11 +36,16 @@ def run(args):
     for read in samfile.fetch(until_eof=True):
         in_c += 1
         read_len = read.query_length if read.is_unmapped else read.infer_read_length()
+        # print("Found record: - ", end='')
 
         if read.is_supplementary:
             suppl_alignments += 1
+            # print("Supplementary:")
         else:
             all_reads += 1
+            # print("Main alignment:")
+        
+        if (not read.is_supplementary) or use_all_alignments:
             outS = str(read.query_name) + "\t" + str(read_len) + "\t"
             out_c += 1
             
@@ -45,8 +53,10 @@ def run(args):
                 unmapped += 1
                 # print("Unmapped read:  read.is_reverse = " + str(read.is_reverse) + ", ref_start = " + str(read.reference_end) +\
                 #         ", ref_end = " + str(read.reference_end))
-                outS += "u\t-\t-\t-\t-\t-\t-"
+                outS += "u\t-\t-\t-\t-\t-\t-\t-\t-"
+                # print("Unmapped")
             else:
+                # print("Mapped:")
                 mapped += 1
                 mapping_length = read.reference_end - read.reference_start
                 ref_name = read.reference_name
@@ -60,10 +70,23 @@ def run(args):
                 # Write your code to determine if the read is useful here
                 useful = '.'
                 
+                cigar_list = read.cigartuples
+                clipped_head = 0
+                clipped_tail = 0
+                first_op = cigar_list[0]
+                if (first_op[0] == 4) or (first_op[0] == 5):    # clipping operation
+                    # print("Clipped " + str(first_op[1]) + " nucs from head")
+                    clipped_head = first_op[1]
+                last_op = cigar_list[-1]
+                if (len(cigar_list) > 1) and ((last_op[0] == 4) or (last_op[0] == 5)):  # clipping from tail
+                    # print("Clipped " + str(last_op[1]) + " nucs from tail")
+                    clipped_tail = last_op[1]
+                
                 outS += ('-' if read.is_reverse else '+') + "\t" + ref_name + "\t" + \
                         str(read.reference_start) + "\t" + str(read.reference_end - 1) + "\t" + \
                         str(mapping_length) + "\t" + \
-                        interesting + "\t" + useful
+                        interesting + "\t" + useful + "\t" + \
+                        str(clipped_head) + "\t" + str(clipped_tail)
                 
             out_f.write(outS + "\n")
 
@@ -88,7 +111,9 @@ def main():
                                                  'from .sam file')
 
     parser.add_argument("-i", "--input-sam", help="Input .sam file to process", required=True)
-    parser.add_argument("-o", "--output-file", help="Output table file name", required=True)
+    parser.add_argument("-o", "--output-file", help="Output .stats file name", required=True)
+    
+    parser.add_argument("--all", action='store_true', help="Output all alignments (with supplementary) (default: False)")
 
     args = parser.parse_args()
     run(args)
