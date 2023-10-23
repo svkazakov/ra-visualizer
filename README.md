@@ -15,19 +15,20 @@ Only contig mapping output:<br/>
 
 
 ## Dependencies
+* python3
+* bwa
 * TeX Live <br>
   (`sudo apt install texlive`)
-* bwa
 
 Python packages:
 * pyx
 * pysam
 
-**NB.** Python package `pysam` is working only for Linux OS, but for Windows users there are several ways
+**NB.** Python package `pysam` is working only in Linux OS, but for Windows users there are several ways
 how to make everything work.  One of them is described in the next section.
 
 ## For Windows
-Install Linux (for example, Ubuntu 22.04.2 LTS) with WSL for Windows (you can use any instruction on Web 
+Install Linux (for example, Ubuntu 22.04.3 LTS) with WSL for Windows (you can use any instruction on Web 
 how to do this, for example, see first steps in [this article](https://ruslanmv.com/blog/Python3-in-Windows-with-Ubuntu)).<br>
 After that you can install `python3` and all dependencies for it (don't forget to install texlive).<br>
 After all, you can run `python3 src/visualize.py` in folder `/mnt/<PATH_TO_PROJECT_DIR>`.
@@ -74,11 +75,19 @@ You can also change the output options (you can see all available options by run
 ## Example 2
 Let's assume you:
 1. Don't have any references... 
-2. But you have assembly in file `contigs.fasta`
+2. But you have an assembly in file `contigs.fasta`
 3. And long reads in file `nanopore-reads.fastq`
 
 What you should do to visualize it?
 
+Run these steps:
+1. `python3 src/concat_contigs.py -i contigs.fasta -o scaffold.fasta`
+2. `bwa index scaffold.fasta`
+3. `bwa mem -x ont2d -A1 -B2 -O2 -E1 -t <number_of_CPUs_to_use> scaffold.fasta nanopore-reads.fastq > nanopore-reads.sam` <br>
+  **NB.** This command is used for Oxford Nanopore long reads.  For other sequencing technologies you should use
+    different command to align reads to reference.
+4. (temporary) Generate `.stats` file from `nanopore-reads.sam` file via command: <br>
+  `python3 src/gen_stats_table.py -i reads.sam -o reads.stats`
 ... TBA
 
 
