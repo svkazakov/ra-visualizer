@@ -39,7 +39,7 @@ Suppose you have:
 2. Some assembly (contigs) in `.fasta` format
 3. And long reads in `.fastq` format...  
 
-What you should do to visualize it all together? ☺
+What should you do to visualize it all together? ☺
 
 Run these steps:
 1. `bwa index reference.fasta`
@@ -78,7 +78,7 @@ Let's assume you:
 2. But you have an assembly in file `contigs.fasta`
 3. And long reads in file `nanopore-reads.fastq`
 
-What you should do to visualize it?
+What should you do to visualize it together?
 
 Run these steps:
 1. `python3 src/concat_contigs.py -i contigs.fasta -o scaffold.fasta`
