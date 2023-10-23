@@ -18,9 +18,6 @@ def run(args):
     out_f.write("read\tread_len\tmap_strain\tref_name\tref_start\tref_end\tmapping_len\t" +
 				"Interesting\tUseful\tclipped_head\tclipped_tail\n")
 
-    use_all_alignments = args.all
-    print("use_all_alignments = " + str(use_all_alignments))
-
     in_c = 0
     out_c = 0
     all_reads = 0
@@ -32,6 +29,10 @@ def run(args):
     if len(samfile.references) == 1:
         ref_name_one_value = samfile.references[0]
     print("Found one reference in .sam file = " + str(ref_name_one_value is not None))
+
+    use_all_alignments = args.all
+    print("use_all_alignments = " + str(use_all_alignments))
+
 
     for read in samfile.fetch(until_eof=True):
         in_c += 1
