@@ -50,8 +50,8 @@ class Visualizer(object):
         assert levels_for_gap_labels >= 1
         assert ref_SIZE or ref_file, "Please set one of --ref-size or --ref-file arguments to calculate reference size"
         self.calculate_reference_size()
-        print("Reference size = " + str(self.ref_SIZE))
-        assert self.ref_SIZE > 0
+        print("Reference size = " + int2str(self.ref_SIZE))
+        assert self.ref_SIZE > 0, "Reference size must be greater than zero!"
 
         self.c = None        # Canvas
 
@@ -290,7 +290,7 @@ class Visualizer(object):
         print("  Short reads            < 20 kb :    " + int2str(len(reads[2]),fl=7) + "    " + perc(len(reads[2]), using, 5))
         print("  Middle-size reads     >= 20 kb :    " + int2str(len(reads[1]),fl=7) + "    " + perc(len(reads[1]), using, 5))
         print("  Long reads            >= 40 kb :    " + int2str(len(reads[0]),fl=7) + "    " + perc(len(reads[0]), using, 5))
-        print("  too small  = " + str(too_small))
+        print("  too small (< 1kb) = " + str(too_small))
     
         print("  Processing...")
         for gr in [0,1,2]:

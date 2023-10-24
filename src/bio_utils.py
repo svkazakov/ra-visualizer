@@ -9,7 +9,8 @@ def calculate_one_contig_size(ref_file):
         resulting_size += len(r.seq)
         input_reads += 1
     if input_reads > 1:
-        raise RuntimeError("Expected only one contig as reference, found " + str(input_reads) + " contigs")
+        raise RuntimeError("Expected only one contig as reference, found " + str(input_reads) + " contigs "
+                                "in reference file")
     
     return resulting_size
 

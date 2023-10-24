@@ -114,7 +114,7 @@ def main():
     parser.add_argument("-i", "--input-sam", help="Input .sam file to process", required=True)
     parser.add_argument("-o", "--output-file", help="Output .stats file name", required=True)
     
-    parser.add_argument("--all", action='store_true', help="Output all alignments (with supplementary) (default: False)")
+    parser.add_argument("--all", action='store_true', help="Output all alignments (with supplementary ones) (default: False)")
 
     args = parser.parse_args()
     run(args)
