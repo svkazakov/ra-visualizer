@@ -88,6 +88,7 @@ Run these steps:
     different command to align reads to reference.
 4. (temporary) Generate `.stats` file from `nanopore-reads.sam` file via command: <br>
   `python3 src/gen_stats_table.py -i reads.sam -o reads.stats`
+
 ... TBA
 
 
